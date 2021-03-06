@@ -90,7 +90,7 @@ input:focus{
     background-size: cover;
 }
 
-.m-login-box{
+.m-box{
     display: flex;
     flex-direction: column;
     align-content: center;
@@ -99,6 +99,15 @@ input:focus{
     width: 576px;
     padding: 0 64px;
     background-color: var(--modal_background);
+}
+
+.m-chat_top-bar{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-evenly;
+    color: var(--white);
+    height: 50px  ;
 }
 
 .h-align-content-center{
