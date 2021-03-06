@@ -35,7 +35,7 @@ label{
     font-size: 16px;
 }
 
-input{
+input, textarea{
     height: 24px;
     width: 500px;
     padding: 8px;
@@ -49,12 +49,24 @@ input[type="color"]{
     cursor: pointer;
 }
 
-input:focus{
+input:focus, textarea:focus{
     background: var(--black);
     border: 2px;
     border-style: solid;
     border-color: var(--purple);
     outline: none;
+}
+
+textarea{
+    resize: none;
+    height: 42px;
+    width: 100%;
+    padding: 12px 8px;
+    overflow: hidden;
+}
+
+textarea::placeholder{
+    color: var(--light_gray);
 }
 
 svg{
@@ -64,7 +76,8 @@ svg{
 .m-button{
     background-color: var(--purple);
     color: var(--white);
-    padding: 10px 0;
+    padding: 10px;
+    width: fit-content;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -111,6 +124,7 @@ svg{
     align-content: flex-start;
     height: 600px;
     width: 576px;
+    padding: 4px 0;
     background-color: var(--modal_background);
 }
 
@@ -122,8 +136,31 @@ svg{
     justify-content: space-between;
     color: var(--white);
     height: 50px;
-    padding: 0 32px;
+    padding: 0 24px;
     border-bottom: 1px solid var(--gray);
+}
+
+.m-chat-box__messages{
+    height: calc(100% - 130px);
+    padding: 12px 24px;
+}
+
+.m-chat-box__text-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100px;
+    padding: 0 24px;
+}
+
+.m-chat__bienvenido{
+    margin: 16px 0;
+    color: var(--light_gray);
+}
+
+.m-chat__message{
+    margin: 16px 0;
+    color: var(--white);
 }
 
 .h-align-content-center{
@@ -140,6 +177,10 @@ svg{
 
 .h-column{
     flex-direction: column;
+}
+
+.h-align-self-end{
+    align-self: flex-end;
 }
 
 .h-mb1{
