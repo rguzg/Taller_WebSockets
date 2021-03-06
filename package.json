@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/rguzg/Taller_WebSockets/issues"
   },
-  "homepage": "https://github.com/rguzg/Taller_WebSockets#readme"
+  "homepage": "https://github.com/rguzg/Taller_WebSockets#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
