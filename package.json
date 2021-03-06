@@ -1,0 +1,23 @@
+{
+  "name": "taller_websockets",
+  "version": "1.0.0",
+  "description": "Taller de WebSockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rguzg/Taller_WebSockets.git"
+  },
+  "keywords": [
+    "websockets",
+    "taller"
+  ],
+  "author": "rguzgu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rguzg/Taller_WebSockets/issues"
+  },
+  "homepage": "https://github.com/rguzg/Taller_WebSockets#readme"
+}
