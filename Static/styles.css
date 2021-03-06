@@ -57,6 +57,10 @@ input:focus{
     outline: none;
 }
 
+svg{
+    cursor: pointer;
+}
+
 .m-button{
     background-color: var(--purple);
     color: var(--white);
@@ -90,7 +94,7 @@ input:focus{
     background-size: cover;
 }
 
-.m-box{
+.m-login-box{
     display: flex;
     flex-direction: column;
     align-content: center;
@@ -101,13 +105,25 @@ input:focus{
     background-color: var(--modal_background);
 }
 
-.m-chat_top-bar{
+.m-chat-box{
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    height: 600px;
+    width: 576px;
+    background-color: var(--modal_background);
+}
+
+.m-chat-box__top-bar{
     display: flex;
     flex-direction: row;
     align-content: center;
-    justify-content: space-evenly;
+    align-items: center;
+    justify-content: space-between;
     color: var(--white);
-    height: 50px  ;
+    height: 50px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--gray);
 }
 
 .h-align-content-center{
