@@ -159,6 +159,10 @@ svg{
     padding: 0 24px;
 }
 
+.m-chat-box__members{
+    padding: 12px 24px;
+}
+
 .m-chat__bienvenido{
     margin: 16px 0;
     color: var(--light_gray);
@@ -199,4 +203,8 @@ svg{
 
 .h-mb3{
     margin-bottom: 1.5rem;
+}
+
+.h-display-none{
+    display: none;
 }
