@@ -9,3 +9,7 @@ document.querySelector('#nombre').addEventListener('input', (element) => {
         document.querySelector('#empezar_chatear').setAttribute('disabled', '');
     }
 });
+
+document.querySelector('#empezar_chatear').addEventListener('click', () => {
+    window.location = '/chat';
+});
