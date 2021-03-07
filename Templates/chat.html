@@ -15,14 +15,17 @@
     <!-- Font Awesome -->
     <script src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" data-auto-replace-svg="nest"></script>
     
+    <!-- Scripts -->
+    <script defer src="/static/js/chat.js"></script>
+
     <title>Sockets.tv - Chat</title>
 </head>
 <body class="l-center">
-    <div class="m-chat-box">
+    <div class="m-chat-box" id="chat">
         <div class="m-chat-box__top-bar">
             <i class="fas fa-arrow-left"></i>
             <h4>CHAT DE SOCKETS</h4>
-            <i class="fas fa-users"></i>
+            <i class="fas fa-users" id="open_chat_members"></i>
         </div>
         <div class="m-chat-box__messages">
             <span class="m-chat__bienvenido">¡Bienvenido a la sala de chat!</span>
@@ -34,10 +37,10 @@
             <button class="m-button h-align-self-end">Chat</button>
         </div>
     </div>
-    <div class="m-chat-box h-display-none">
+    <div class="m-chat-box h-display-none" id="chat_members">
         <div class="m-chat-box__top-bar">
             <h4 style="width: 100%;text-align: center;">MIEMBROS DEL CHAT</h4>
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" id="close_chat_members"></i>
         </div>
         <div class="m-chat-box__members">
             <span style="font-weight: bold; color: #DC5353;">rguzgu</span>        
