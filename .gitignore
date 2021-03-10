@@ -12,4 +12,6 @@
 ### JavaScript ###
 node_modules
 
+database.js
+
 # End of https://www.toptal.com/developers/gitignore/api/vscode
