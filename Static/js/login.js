@@ -16,9 +16,12 @@ document.querySelector('#empezar_chatear').addEventListener('click', async () =>
 
     let response = await fetch('login', {
         method: 'POST',
-        body: {
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
             username,
             color
-        }
+        })
     });
 });
