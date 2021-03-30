@@ -10,6 +10,15 @@ document.querySelector('#nombre').addEventListener('input', (element) => {
     }
 });
 
-document.querySelector('#empezar_chatear').addEventListener('click', () => {
-    window.location = '/chat';
+document.querySelector('#empezar_chatear').addEventListener('click', async () => {
+    let username = document.querySelector('#nombre').value;
+    let color = document.querySelector('#color').value;
+
+    let response = await fetch('login', {
+        method: 'POST',
+        body: {
+            username,
+            color
+        }
+    });
 });
