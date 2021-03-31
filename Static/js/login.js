@@ -35,8 +35,10 @@ document.querySelector('#empezar_chatear').addEventListener('click', async () =>
             sessionStorage.setItem('token', json['message']['token']);
         } else {
             console.error(`${json['status']}: ${json['message']}`);
+            alert(json['message']);
         }
     } catch (error) {
         console.error(error);
+        alert(error);
     }
 });
