@@ -33,6 +33,7 @@ document.querySelector('#empezar_chatear').addEventListener('click', async () =>
         // se imprime el codigo de error en la consola
         if(response.ok){
             sessionStorage.setItem('token', json['message']['token']);
+            window.location = '/chat';
         } else {
             console.error(`${json['status']}: ${json['message']}`);
             alert(json['message']);
