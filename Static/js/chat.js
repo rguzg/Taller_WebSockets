@@ -23,7 +23,7 @@ const toggleChatMemberScreen = async () => {
             if(request.ok){
                 let chat_members = json.message;
                 let members = document.querySelector('.m-chat-box__members');
-                
+
                 // Este es un hack todo feo, pero por el momento está bien usarlo
                 members.innerHTML = "";
 
@@ -72,6 +72,7 @@ const OnWSOpen = () => {
 
 // Si ocurre un error al conectarse con el socket, se le pedirá al usuario que vuelva a iniciar sesión
 const OnWSError = (error) => {
+    alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
     console.error(error);
     window.location = '/';
 }
@@ -127,7 +128,7 @@ window.addEventListener('load', () => {
         username = decoded_token.username;
         color = decoded_token.color;
 
-        ws = new WebSocket(`ws:///77279d0b3b12.ngrok.io?token=${token}`);
+        ws = new WebSocket(`ws:///localhost:3000?token=${token}`);
         ws.onopen = OnWSOpen;
         ws.onerror = OnWSError;
         ws.onmessage = OnWSMessage;
@@ -135,6 +136,7 @@ window.addEventListener('load', () => {
             console.log(event);
         };
     } catch (error) {
+        alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
         window.location = '/';
     }
 });
