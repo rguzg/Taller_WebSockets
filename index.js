@@ -69,6 +69,18 @@ app.post('/login', (req, res) => {
     return res.status(400).json({'status': 400, 'message': 'El formato de la petición es incorrecto. Debe incluir los parametros username y color'});
 });
 
+// Enviar los usernames de las personas actualmente conectadas al chat
+app.get('/connected', (req, res)=> {
+    try{
+        let token = req.headers.authorization.split('Bearer ')[1];
+        jwt.verify(token, secret_key);
+
+        return res.status(200).json({status: 200, message: Object.keys(database.usuarios)});
+    } catch {
+        res.status(401).json({status: 401, message: "JWT Invalido"});
+    }
+});
+
 // Al recibir la petición para conectarse al servidor de WS, primero se revisará la validez del JWT
 server.on('upgrade', (req, socket, head) => {
     try{
@@ -104,7 +116,7 @@ socket_server.on('connection', (ws, request) => {
             client.send(message);
         });
     });
-  });
+});
 
 server.listen(process.env.PORT || 3000, () => {
     console.log('The server is running!');
