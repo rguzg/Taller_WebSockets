@@ -17,6 +17,7 @@
     
     <!-- Scripts -->
     <script defer src="/static/js/chat.js"></script>
+    <script defer src="/static/js/jwt-decode.js"></script>
 
     <title>Sockets.tv - Chat</title>
 </head>
@@ -28,10 +29,13 @@
             <i class="fas fa-users" id="open_chat_members"></i>
         </div>
         <div class="m-chat-box__messages">
-            <span class="m-chat__bienvenido" id="conectando">Conectando al chat...</span> <br>
-            <span class="m-chat__bienvenido">¡Bienvenido a la sala de chat!</span>
+            <div class="h-flex" id="mensaje_conexion">
+                <img class="h-mr1" src="../Static/img/loading.svg" alt="" srcset="">
+                <span class="m-chat__bienvenido">Conectando al chat...</span>
+            </div>
+            <!-- <span class="m-chat__bienvenido">¡Bienvenido a la sala de chat!</span>
             <div class="m-chat__message"><span style="font-weight: bold; color: #DC5353;">rguzgu</span><span>: </span><span>Mensaje de Chat</span></div>
-            <div class="m-chat__message"><span style="font-weight: bold; color: #5785D7;">someoneinchat</span><span>: </span><span>Kappa</span></div>
+            <div class="m-chat__message"><span style="font-weight: bold; color: #5785D7;">someoneinchat</span><span>: </span><span>Kappa</span></div> -->
         </div>
         <div class="m-chat-box__text-box">
             <textarea name="" id="chat_text-box" maxlength="50" rows="1" placeholder="Envía un mensaje"></textarea>

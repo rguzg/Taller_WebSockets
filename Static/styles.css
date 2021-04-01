@@ -205,6 +205,10 @@ svg{
     margin-bottom: 1.5rem;
 }
 
+.h-mr1{
+    margin-right: 0.5rem;
+}
+
 .h-display-none{
     display: none;
 }
