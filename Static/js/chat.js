@@ -36,6 +36,21 @@ document.querySelector('#open_chat_members').addEventListener('click', toggleCha
 document.querySelector('#close_chat_members').addEventListener('click', toggleChatMemberScreen);
 document.querySelector('#back').addEventListener('click', goBack);
 
+document.querySelector('#send_message').addEventListener('click', () => {
+    // Solo enviar mensajes cuando el estado de WS sea uno, osea cuando esté conectado al servidor
+    if(ws.readyState === 1){
+        let message = document.querySelector('#chat_text-box').value;
+
+        ws.send(JSON.stringify({
+            message,
+            username,
+            color
+        }));
+
+        document.querySelector('#chat_text-box').value = "";
+    }
+});
+
 // Cuando la página haya cargado completamente, se verifica que exista un JWT valido,
 // si no existe, se regresa a /. Si si existe, se almacenan los contenidos del token en memoria 
 // y se conecta al servidor de WS
