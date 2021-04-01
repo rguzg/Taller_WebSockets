@@ -2,11 +2,13 @@ const express = require('express');
 const ws = require('ws');
 const http = require('http');
 const jwt = require('jsonwebtoken');
+
 const database = require('./database');
 
 const app = express();
 const server = http.createServer(app);
 const socket_server = new ws.Server({clientTracking: false, noServer: true});
+const secret_key = "e61f65d5-70b0-4271-bb28-87e0f3430b69";
 
 // Retorna true si text es un string que representa un color en formato hexadecimal
 const IsHexColor = (text) => {
@@ -30,6 +32,7 @@ app.get('/', (req, res) => res.sendFile(`${__dirname}/Templates/login.html`));
 app.get('/chat', (req, res) => res.sendFile(`${__dirname}/Templates/chat.html`));
 
 app.post('/login', (req, res) => {
+
     let {username, color} = req.body;
     
     if(username && color){
@@ -54,17 +57,13 @@ app.post('/login', (req, res) => {
         let token = jwt.sign({
             username,
             color
-        }, "e61f65d5-70b0-4271-bb28-87e0f3430b69");
+        }, secret_key);
         
         return res.status(200).json({'status': 200, 'message': {token}});
     }
     
     // Si el formato del body de la petición no es el correcto, se retorna una respuesta 400
     return res.status(400).json({'status': 400, 'message': 'El formato de la petición es incorrecto. Debe incluir los parametros username y color'});
-});
-
-app.get('/login', (req, res) => {
-    return res.status(200)
 });
 
 server.on('upgrade', (req, socket, head) => {
