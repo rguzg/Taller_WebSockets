@@ -98,7 +98,8 @@ socket_server.on('connection', (ws, request) => {
 
     // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
     ws.on('message', (message) => {
-        console.log(`Received message ${message}`);
+        parsed_message = JSON.parse(message);
+        console.log(`Received message ${parsed_message.message} from: ${parsed_message.username}`);
         socket_server.clients.forEach((client) => {
             client.send(message);
         });
