@@ -43,3 +43,8 @@ document.querySelector('#empezar_chatear').addEventListener('click', async () =>
         alert(error);
     }
 });
+
+// Cuando la página haya cargado completamente, si existe, se elimina el JWT del SessionStorage
+window.addEventListener('load', () => {
+    sessionStorage.removeItem('token');
+});
