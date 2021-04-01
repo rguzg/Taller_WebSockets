@@ -2,9 +2,53 @@ let username;
 let color;
 let ws;
 
-const toggleChatMemberScreen = () => {
-    document.querySelector('#chat_members').classList.toggle('h-display-none');
+const toggleChatMemberScreen = async () => {
+    let chat_members_container = document.querySelector('#chat_members');
+
+    chat_members_container.classList.toggle('h-display-none');
     document.querySelector('#chat').classList.toggle('h-display-none');
+
+    // Si se está mostrando #chat_members, obtener la lista de usuarios conectados y mostrarla
+    if(!chat_members_container.classList.contains('h-display-none')){
+        try {
+            let request = await fetch('/connected', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                }
+            });
+
+            let json = await request.json();
+
+            if(request.ok){
+                let chat_members = json.message;
+                let members = document.querySelector('.m-chat-box__members');
+                
+                // Este es un hack todo feo, pero por el momento está bien usarlo
+                members.innerHTML = "";
+
+                chat_members.forEach((chat_member) => {
+                    let username = document.createElement('span');
+
+                    username.innerText = chat_member;
+                    username.style.fontWeight = 'bold';
+                    username.style.color = 'var(--purple)';
+                    username.style.marginBottom = '0.25rem';
+
+                    members.appendChild(username);
+                });
+            } else {
+                alert(json.message);
+            }
+
+            if(request.status === 401){
+                window.location = '/';
+            }
+        } catch (error) {
+            console.error(error);
+            alert(error);
+        } 
+    }
 }
 
 const goBack = () => {
