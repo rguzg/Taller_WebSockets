@@ -55,6 +55,27 @@ document.querySelector('#send_message').addEventListener('click', () => {
 // si no existe, se regresa a /. Si si existe, se almacenan los contenidos del token en memoria 
 // y se conecta al servidor de WS
 window.addEventListener('load', () => {
+    const OnWSMessage = (event) => {
+        let parsed_message = JSON.parse(event.data);
+
+        let chat_message_container = document.createElement('div');
+        let username = document.createElement('span');
+        let chat_message = document.createElement('span');
+
+        chat_message_container.classList.add("m-chat__message");
+
+        username.style.fontWeight = 'bold';
+        username.style.color = parsed_message.color;
+        username.innerText = parsed_message.username;
+        
+        chat_message.innerText = `: ${parsed_message.message}`;
+
+        chat_message_container.appendChild(username);
+        chat_message_container.appendChild(chat_message);
+
+        document.querySelector('.m-chat-box__messages').appendChild(chat_message_container);
+    };
+
     try {
         let token = sessionStorage.getItem("token");
         let decoded_token = jwt_decode(token);
@@ -62,13 +83,14 @@ window.addEventListener('load', () => {
         username = decoded_token.username;
         color = decoded_token.color;
 
-        ws = new WebSocket(`ws://localhost:3000?token=${token}`);
+        ws = new WebSocket(`ws:///77279d0b3b12.ngrok.io?token=${token}`);
         ws.onopen = OnWSOpen;
         ws.onerror = OnWSError;
+        ws.onmessage = OnWSMessage;
         ws.onclose = (event) => {
             console.log(event);
-        }
-    } catch {
+        };
+    } catch (error) {
         window.location = '/';
     }
 });
