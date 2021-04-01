@@ -7,7 +7,7 @@ const database = require('./database');
 
 const app = express();
 const server = http.createServer(app);
-const socket_server = new ws.Server({clientTracking: false, noServer: true});
+const socket_server = new ws.Server({clientTracking: true, noServer: true});
 const secret_key = "e61f65d5-70b0-4271-bb28-87e0f3430b69";
 
 // Retorna true si text es un string que representa un color en formato hexadecimal
@@ -23,6 +23,9 @@ const IsHexColor = (text) => {
 
     return false;
 }
+
+// Este map será utilizado para asociar a los WS con el usuario al que les corresponde
+let map = new Map();
 
 /* Middleware */
 app.use(express.json()); // Parsear los request bodies que sean application/json para que puedan ser leidos por req.body
@@ -91,12 +94,15 @@ server.on('upgrade', (req, socket, head) => {
 })
 
 socket_server.on('connection', (ws, request) => {  
+    map.set(request.user, ws);
+
+    // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
     ws.on('message', (message) => {
-      console.log(`Received message ${message}`);
-      ws.send(message);
+        console.log(`Received message ${message}`);
+        socket_server.clients.forEach((client) => {
+            client.send(message);
+        });
     });
-  
-    ws.send('¡Feliz Navidad! 🎄')
   });
 
 server.listen(process.env.PORT || 3000, () => {
