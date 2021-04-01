@@ -26,6 +26,12 @@ const OnWSOpen = () => {
     document.querySelector('.m-chat-box__messages').appendChild(CreateMensajeBienvenida());
 }
 
+// Si ocurre un error al conectarse con el socket, se le pedirá al usuario que vuelva a iniciar sesión
+const OnWSError = (error) => {
+    console.error(error);
+    window.location = '/';
+}
+
 document.querySelector('#open_chat_members').addEventListener('click', toggleChatMemberScreen);
 document.querySelector('#close_chat_members').addEventListener('click', toggleChatMemberScreen);
 document.querySelector('#back').addEventListener('click', goBack);
@@ -35,13 +41,18 @@ document.querySelector('#back').addEventListener('click', goBack);
 // y se conecta al servidor de WS
 window.addEventListener('load', () => {
     try {
-        let decoded_token = jwt_decode(sessionStorage.getItem("token"));
+        let token = sessionStorage.getItem("token");
+        let decoded_token = jwt_decode(token);
 
         username = decoded_token.username;
         color = decoded_token.color;
 
-        ws = new WebSocket('ws://localhost:3000');
+        ws = new WebSocket(`ws://localhost:3000?token=${token}`);
         ws.onopen = OnWSOpen;
+        ws.onerror = OnWSError;
+        ws.onclose = (event) => {
+            console.log(event);
+        }
     } catch {
         window.location = '/';
     }
