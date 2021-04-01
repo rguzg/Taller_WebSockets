@@ -11,6 +11,20 @@ const goBack = () => {
     window.location = "/";
 }
 
+const CreateMensajeBienvenida = () => {
+    let span = document.createElement('span');
+    span.innerText = "¡Bienvenido a la sala de chat!";
+    span.classList.add('m-chat__bienvenido');
+
+    return span;
+}
+
+// Quitar el mensaje de "Conectando al chat..." y agregando el mensaje de "¡Bienvenido al chat!"
+const OnWSOpen = () => {
+    document.querySelector('#mensaje_conexion').remove();
+
+    document.querySelector('.m-chat-box__messages').appendChild(CreateMensajeBienvenida());
+}
 
 document.querySelector('#open_chat_members').addEventListener('click', toggleChatMemberScreen);
 document.querySelector('#close_chat_members').addEventListener('click', toggleChatMemberScreen);
@@ -27,6 +41,7 @@ window.addEventListener('load', () => {
         color = decoded_token.color;
 
         ws = new WebSocket('ws://localhost:3000');
+        ws.onopen = OnWSOpen;
     } catch {
         window.location = '/';
     }
