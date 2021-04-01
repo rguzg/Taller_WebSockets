@@ -96,6 +96,13 @@ document.querySelector('#send_message').addEventListener('click', () => {
     }
 });
 
+// Enviar el mensaje cuando se presione enter y cuando se #chat_text-box tenga focus 
+document.querySelector('#chat_text-box').addEventListener('keydown', (event) => {
+    if(event.code === 'Enter'){
+        document.querySelector('#send_message').dispatchEvent(new Event('click'));
+    }
+});
+
 // Cuando la página haya cargado completamente, se verifica que exista un JWT valido,
 // si no existe, se regresa a /. Si si existe, se almacenan los contenidos del token en memoria 
 // y se conecta al servidor de WS
