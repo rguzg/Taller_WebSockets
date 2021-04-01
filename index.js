@@ -66,7 +66,25 @@ app.post('/login', (req, res) => {
     return res.status(400).json({'status': 400, 'message': 'El formato de la petición es incorrecto. Debe incluir los parametros username y color'});
 });
 
+// Al recibir la petición para conectarse al servidor de WS, primero se revisará la validez del JWT
 server.on('upgrade', (req, socket, head) => {
+    try{
+        let token = req.url.split("token=")[1];
+        let decoded_token = jwt.verify(token, secret_key);
+        
+        // Si no existe el nombre de usuario que menciona el token, se destruye el socket
+        if(!database.usuarios[decoded_token.username]){
+            throw new Error();
+        }
+
+        req.user = decoded_token.username;
+    } catch (error) {
+        // Si el JWT es invalido, se destruye el socket
+        socket.destroy();
+        return;
+    }
+
+    // Si el JWT es valido, se continua con la conexión al servidor de WS
     socket_server.handleUpgrade(req, socket, head, (socket, req)=> {
         socket_server.emit('connection', socket, req);
     });
