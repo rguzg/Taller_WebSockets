@@ -149,7 +149,7 @@ window.addEventListener('load', () => {
             console.log(event);
         };
     } catch (error) {
-        alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
+        alert("Ocurrió un error de autenticación, es necesario que vuelvas a iniciar sesión");
         sessionStorage.removeItem('token');
         window.location = '/';
     }
