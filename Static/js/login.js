@@ -44,9 +44,7 @@ document.querySelector('#empezar_chatear').addEventListener('click', async () =>
     }
 });
 
-// Cuando la página haya cargado completamente, si existe un token, redireccionar a /chat
+// Cuando la página haya cargado completamente, elminar el token
 window.addEventListener('load', () => {
-    if(sessionStorage.getItem('token')){
-        window.location = "/chat";
-    }
+    sessionStorage.removeItem('token');
 });
