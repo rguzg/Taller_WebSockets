@@ -51,7 +51,9 @@ const toggleChatMemberScreen = async () => {
     }
 }
 
+// Al regresar a / también se cerrará sesión
 const goBack = () => {
+    sessionStorage.removeItem('token');
     window.location = "/";
 }
 
