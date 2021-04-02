@@ -136,6 +136,12 @@ window.addEventListener('load', () => {
 
     try {
         let token = sessionStorage.getItem("token");
+
+        if(token === null){
+            window.location = '/';
+            return;
+        }
+
         let decoded_token = jwt_decode(token);
 
         username = decoded_token.username;
