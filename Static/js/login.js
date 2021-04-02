@@ -44,7 +44,9 @@ document.querySelector('#empezar_chatear').addEventListener('click', async () =>
     }
 });
 
-// Cuando la página haya cargado completamente, si existe, se elimina el JWT del SessionStorage
+// Cuando la página haya cargado completamente, si existe un token, redireccionar a /chat
 window.addEventListener('load', () => {
-    sessionStorage.removeItem('token');
+    if(sessionStorage.getItem('token')){
+        window.location = "/chat";
+    }
 });
