@@ -105,6 +105,7 @@ document.querySelector('#send_message').addEventListener('click', () => {
 // Enviar el mensaje cuando se presione enter y cuando se #chat_text-box tenga focus 
 document.querySelector('#chat_text-box').addEventListener('keydown', (event) => {
     if(event.code === 'Enter'){
+        event.preventDefault();
         document.querySelector('#send_message').dispatchEvent(new Event('click'));
     }
 });
