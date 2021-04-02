@@ -24,26 +24,6 @@ const IsHexColor = (text) => {
     return false;
 }
 
-// Retorna true si el nombre de usuario está abandonado. Un nombre de usuario se considera abandonado si su
-// last_connected es nulo o si su ultima conexión fue hace más de una hora
-const IsUsernameAbandoned = (username) => {
-    let user = database.usuarios[username];
-
-    if(user == undefined){
-        return true;
-    }
-
-    if(user.last_connection == null){
-        return true;
-    }
-
-    if((Date.now() - user.last_connection === 3600000) && (user.connected === false)){
-        return true;
-    }
-
-    return false;
-}
-
 // Este map será utilizado para asociar a los WS con el usuario al que les corresponde
 let map = new Map();
 
@@ -59,8 +39,8 @@ app.post('/login', (req, res) => {
     let {username, color} = req.body;
     
     if(username && color){
-        // Si ya existe un usuario con el nombre username y el usuario no se encuentra abandonado, se retorna una respuesta 400
-        if(Object.keys(database.usuarios).includes(username) && !IsUsernameAbandoned(username)){
+        // Si ya existe un usuario con el nombre username y el usuario se encuentra conectado, se retorna una respuesta 400
+        if(Object.keys(database.usuarios).includes(username) && database.usuarios[username].connected){
             return res.status(400).json({'status': 400, 'message': 'Ya existe un usuario con ese nombre'});
         }
         
@@ -81,7 +61,6 @@ app.post('/login', (req, res) => {
             username,
             color,
             connected: false,
-            last_connection: null,
             current_token: token
         };
         
@@ -109,14 +88,14 @@ server.on('upgrade', (req, socket, head) => {
     try{
         let token = req.url.split("token=")[1];
         let decoded_token = jwt.verify(token, secret_key);
-        let username = decoded_token.username
+        let username = decoded_token.username;
         
         // Si no existe el nombre de usuario que menciona el token, se destruye el socket
         if(!database.usuarios[username]){
             throw new Error();
         }
 
-        // Si el token enviado por el usuario, no es token actual asignado a ese usuario, se destruye el socket
+        // Si el token no es el mismo que está almacenado en la BD, se destruye el socket
         if(database.usuarios[username].current_token != token){
             throw new Error();
         }
