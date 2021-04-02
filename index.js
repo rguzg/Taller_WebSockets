@@ -117,11 +117,8 @@ socket_server.on('connection', (ws, request) => {
         });
     });
 
-    // Cuando se cierra la conexión, eliminar de la database al usuario que se desconectó
     ws.on('close', () => {
         let disconnected_user = map.get(ws);
-        delete database.usuarios[disconnected_user];
-
         console.log(`${disconnected_user} se desconectó del chat`);
     });
 
