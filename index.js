@@ -123,7 +123,11 @@ socket_server.on('connection', (ws, request) => {
         delete database.usuarios[disconnected_user];
 
         console.log(`${disconnected_user} se desconectó del chat`);
-    })
+    });
+
+    ws.on('error', (error) => {
+        console.log(error);
+    });
 });
 
 server.listen(process.env.PORT || 3000, () => {
