@@ -74,6 +74,9 @@ const OnWSOpen = () => {
 const OnWSError = (error) => {
     alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
     console.error(error);
+
+    sessionStorage.removeItem('token');
+
     window.location = '/';
 }
 
@@ -145,6 +148,7 @@ window.addEventListener('load', () => {
         };
     } catch (error) {
         alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
+        sessionStorage.removeItem('token');
         window.location = '/';
     }
 });
