@@ -150,8 +150,11 @@ socket_server.on('connection', (ws, request) => {
         });
     });
 
+    // Al cerrar el WS, se actualizara el estado de conexión del usuario a false
     ws.on('close', () => {
         let disconnected_user = map.get(ws);
+        database.usuarios[disconnected_user].connected = false;
+
         console.log(`${disconnected_user} se desconectó del chat`);
     });
 
