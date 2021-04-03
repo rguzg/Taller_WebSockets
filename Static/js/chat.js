@@ -2,59 +2,11 @@ let username;
 let color;
 let ws;
 
-const toggleChatMemberScreen = async () => {
+const toggleChatMemberScreen = () => {
     let chat_members_container = document.querySelector('#chat_members');
 
     chat_members_container.classList.toggle('h-display-none');
     document.querySelector('#chat').classList.toggle('h-display-none');
-
-    // Si se está mostrando #chat_members, obtener la lista de usuarios conectados y mostrarla
-    if(!chat_members_container.classList.contains('h-display-none')){
-        try {
-            let request = await fetch('/connected', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-                }
-            });
-
-            let json = await request.json();
-
-            if(request.ok){
-                let chat_members = json.message;
-                let members = document.querySelector('.m-chat-box__members');
-
-                // Este es un hack todo feo, pero por el momento está bien usarlo
-                members.innerHTML = "";
-
-                chat_members.forEach((chat_member) => {
-                    let username = document.createElement('span');
-
-                    username.innerText = chat_member;
-                    username.style.fontWeight = 'bold';
-                    username.style.color = 'var(--purple)';
-                    username.style.marginBottom = '0.25rem';
-
-                    members.appendChild(username);
-                });
-            } else {
-                alert(json.message);
-            }
-
-            if(request.status === 401){
-                window.location = '/';
-            }
-        } catch (error) {
-            console.error(error);
-            alert(error);
-        } 
-    }
-}
-
-// Al regresar a / también se cerrará sesión
-const goBack = () => {
-    sessionStorage.removeItem('token');
-    window.location = "/";
 }
 
 const CreateMensajeBienvenida = () => {
@@ -65,26 +17,65 @@ const CreateMensajeBienvenida = () => {
     return span;
 }
 
-// Quitar el mensaje de "Conectando al chat..." y agregando el mensaje de "¡Bienvenido al chat!"
-const OnWSOpen = () => {
-    document.querySelector('#mensaje_conexion').remove();
+// Mostrar #chat_members junto con la lista de usuarios conectados
+document.querySelector('#open_chat_members').addEventListener('click', async () => {
+    toggleChatMemberScreen();
+    
+    try {
+        let request = await fetch('/connected', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            }
+        });
 
-    document.querySelector('.m-chat-box__messages').appendChild(CreateMensajeBienvenida());
-}
+        let json = await request.json();
 
-// Si ocurre un error al conectarse con el socket, se le pedirá al usuario que vuelva a iniciar sesión
-const OnWSError = (error) => {
-    alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
-    console.error(error);
+        if(request.ok){
+            let chat_members = json.message;
+            let members = document.querySelector('.m-chat-box__members');
 
+            // Este es un hack todo feo, pero por el momento está bien usarlo
+            members.innerHTML = "";
+
+            chat_members.forEach((chat_member) => {
+                let username = document.createElement('span');
+
+                username.innerText = chat_member;
+                username.style.fontWeight = 'bold';
+                username.style.color = 'var(--purple)';
+                username.style.marginBottom = '0.25rem';
+
+                members.appendChild(username);
+            });
+        } else {
+            alert(json.message);
+        }
+
+        if(request.status === 401){
+            window.location = '/';
+        }
+    } catch (error) {
+        console.error(error);
+        alert(error);
+    } 
+});
+
+// Cerrar #chat_members y eliminar la lista de usuarios conectados
+document.querySelector('#close_chat_members').addEventListener('click', () => {
+    toggleChatMemberScreen();
+
+    let members = document.querySelector('.m-chat-box__members');
+
+    // Este es un hack todo feo, pero por el momento está bien usarlo
+    members.innerHTML = "";
+});
+
+// Al regresar a / también se cerrará sesión
+document.querySelector('#back').addEventListener('click', () => {
     sessionStorage.removeItem('token');
-
-    window.location = '/';
-}
-
-document.querySelector('#open_chat_members').addEventListener('click', toggleChatMemberScreen);
-document.querySelector('#close_chat_members').addEventListener('click', toggleChatMemberScreen);
-document.querySelector('#back').addEventListener('click', goBack);
+    window.location = "/";
+});
 
 document.querySelector('#send_message').addEventListener('click', () => {
     let message = document.querySelector('#chat_text-box').value;
@@ -114,6 +105,7 @@ document.querySelector('#chat_text-box').addEventListener('keydown', (event) => 
 // si no existe, se regresa a /. Si si existe, se almacenan los contenidos del token en memoria 
 // y se conecta al servidor de WS
 window.addEventListener('load', () => {
+    // Mostrar en el chat los mensajes recibidos
     const OnWSMessage = (event) => {
         let parsed_message = JSON.parse(event.data);
 
@@ -135,6 +127,23 @@ window.addEventListener('load', () => {
         document.querySelector('.m-chat-box__messages').appendChild(chat_message_container);
     };
 
+    // Quitar el mensaje de "Conectando al chat..." y agregando el mensaje de "¡Bienvenido al chat!"
+    const OnWSOpen = () => {
+        document.querySelector('#mensaje_conexion').remove();
+
+        document.querySelector('.m-chat-box__messages').appendChild(CreateMensajeBienvenida());
+    }
+
+    // Si ocurre un error al conectarse con el socket, se le pedirá al usuario que vuelva a iniciar sesión
+    const OnWSError = (error) => {
+        alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
+        console.error(error);
+
+        sessionStorage.removeItem('token');
+
+        window.location = '/';
+    }
+
     try {
         let token = sessionStorage.getItem("token");
 
@@ -152,9 +161,6 @@ window.addEventListener('load', () => {
         ws.onopen = OnWSOpen;
         ws.onerror = OnWSError;
         ws.onmessage = OnWSMessage;
-        ws.onclose = (event) => {
-            console.log(event);
-        };
     } catch (error) {
         alert("Ocurrió un error de autenticación, es necesario que vuelvas a iniciar sesión");
         sessionStorage.removeItem('token');
