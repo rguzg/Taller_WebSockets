@@ -82,9 +82,9 @@ app.get('/connected', (req, res)=> {
         let token = req.headers.authorization.split('Bearer ')[1];
         jwt.verify(token, secret_key);
 
-        //let connected_users = Object.keys(database.usuarios).filter((user))
+        let connected_users = Object.keys(database.usuarios).filter((user) => database.usuarios[user].connected);
 
-        return res.status(200).json({status: 200, message: Object.keys(database.usuarios)});
+        return res.status(200).json({status: 200, message: connected_users});
     } catch {
         res.status(401).json({status: 401, message: "JWT Invalido"});
     }
