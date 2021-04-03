@@ -7,7 +7,11 @@ const database = require('./database');
 
 const app = express();
 const server = http.createServer(app);
+
+// Cuando clientTracking: true se obtiene acceso a socket_server.clients
+// noServer: true permite que definamos un servidor http que se encargará de hacer la conexión de los WS
 const socket_server = new ws.Server({clientTracking: true, noServer: true});
+
 const secret_key = "e61f65d5-70b0-4271-bb28-87e0f3430b69";
 
 // Retorna true si text es un string que representa un color en formato hexadecimal
@@ -34,6 +38,7 @@ app.use('/static', express.static('Static')); // Servir archivos estáticos que 
 app.get('/', (req, res) => res.sendFile(`${__dirname}/Templates/login.html`));
 app.get('/chat', (req, res) => res.sendFile(`${__dirname}/Templates/chat.html`));
 
+// Retorna un JWT si elnombre de usuario y color son validos
 app.post('/login', (req, res) => {
 
     let {username, color} = req.body;
@@ -77,6 +82,8 @@ app.get('/connected', (req, res)=> {
         let token = req.headers.authorization.split('Bearer ')[1];
         jwt.verify(token, secret_key);
 
+        //let connected_users = Object.keys(database.usuarios).filter((user))
+
         return res.status(200).json({status: 200, message: Object.keys(database.usuarios)});
     } catch {
         res.status(401).json({status: 401, message: "JWT Invalido"});
@@ -103,10 +110,8 @@ server.on('upgrade', (req, socket, head) => {
         req.user = username;
 
         // Si el token es valido, se actualiza el estado de conexión del usuario
-        database.usuarios[username].last_connection = Date.now();
         database.usuarios[username].connected = true;
     } catch (error) {
-        // Si el JWT es invalido, se destruye el socket
         socket.destroy();
         return;
     }
@@ -117,13 +122,16 @@ server.on('upgrade', (req, socket, head) => {
     });
 })
 
+// Aquí se encuentra todo el manejo de los WS después de que se hayan conectado al servidor
 socket_server.on('connection', (ws, request) => {  
     map.set(ws, request.user);
 
     // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
     ws.on('message', (message) => {
         parsed_message = JSON.parse(message);
-        console.log(`Received message ${parsed_message.message} from: ${parsed_message.username}`);
+
+        console.log(`Se recibió el mensaje ${parsed_message.message} de: ${parsed_message.username}`);
+
         socket_server.clients.forEach((client) => {
             client.send(message);
         });
