@@ -2,15 +2,13 @@ const express = require('express');
 const ws = require('ws');
 const http = require('http');
 const jwt = require('jsonwebtoken');
+const io = require("socket.io");
 
 const database = require('./database');
 
 const app = express();
 const server = http.createServer(app);
-
-// Cuando clientTracking: true se obtiene acceso a socket_server.clients
-// noServer: true permite que definamos un servidor http que se encargará de hacer la conexión de los WS
-const socket_server = new ws.Server({clientTracking: true, noServer: true});
+const socket_server = io(server);
 
 const secret_key = "e61f65d5-70b0-4271-bb28-87e0f3430b69";
 
@@ -90,10 +88,10 @@ app.get('/connected', (req, res)=> {
     }
 });
 
-// Al recibir la petición para conectarse al servidor de WS, primero se revisará la validez del JWT
-server.on('upgrade', (req, socket, head) => {
+// Al recibir la petición para conectarse al servidor de WS, primero se revisará la validez del JWT utilizando un middleware
+socket_server.use((socket, next) => {
     try{
-        let token = req.url.split("token=")[1];
+        let token = socket.handshake.auth.token;
         let decoded_token = jwt.verify(token, secret_key);
         let username = decoded_token.username;
         
@@ -107,48 +105,43 @@ server.on('upgrade', (req, socket, head) => {
             throw new Error();
         }
 
-        req.user = username;
-
         // Si el token es valido, se actualiza el estado de conexión del usuario
         database.usuarios[username].connected = true;
+        
+        next();
     } catch (error) {
-        socket.destroy();
-        return;
+        // Si se llama a next con un objeto error, el cliente se desconectará del socket
+        next(error);
     }
-
-    // Si el JWT es valido, se continua con la conexión al servidor de WS
-    socket_server.handleUpgrade(req, socket, head, (socket, req)=> {
-        socket_server.emit('connection', socket, req);
-    });
-})
+});
 
 // Aquí se encuentra todo el manejo de los WS después de que se hayan conectado al servidor
-socket_server.on('connection', (ws, request) => {  
-    map.set(ws, request.user);
+// socket_server.on('connection', (ws, request) => {  
+//     map.set(ws, request.user);
 
-    // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
-    ws.on('message', (message) => {
-        parsed_message = JSON.parse(message);
+//     // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
+//     ws.on('message', (message) => {
+//         parsed_message = JSON.parse(message);
 
-        console.log(`Se recibió el mensaje ${parsed_message.message} de: ${parsed_message.username}`);
+//         console.log(`Se recibió el mensaje ${parsed_message.message} de: ${parsed_message.username}`);
 
-        socket_server.clients.forEach((client) => {
-            client.send(message);
-        });
-    });
+//         socket_server.clients.forEach((client) => {
+//             client.send(message);
+//         });
+//     });
 
-    // Al cerrar el WS, se actualizara el estado de conexión del usuario a false
-    ws.on('close', () => {
-        let disconnected_user = map.get(ws);
-        database.usuarios[disconnected_user].connected = false;
+//     // Al cerrar el WS, se actualizara el estado de conexión del usuario a false
+//     ws.on('close', () => {
+//         let disconnected_user = map.get(ws);
+//         database.usuarios[disconnected_user].connected = false;
 
-        console.log(`${disconnected_user} se desconectó del chat`);
-    });
+//         console.log(`${disconnected_user} se desconectó del chat`);
+//     });
 
-    ws.on('error', (error) => {
-        console.log(error);
-    });
-});
+//     ws.on('error', (error) => {
+//         console.log(error);
+//     });
+// });
 
 server.listen(process.env.PORT || 3000, () => {
     console.log('The server is running!');
