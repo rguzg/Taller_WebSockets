@@ -133,7 +133,7 @@ window.addEventListener('load', () => {
     }
 
     // Si ocurre un error al conectarse con el socket, se le pedirá al usuario que vuelva a iniciar sesión
-    const OnWSError = (error) => {
+    const OnWSConnectError = (error) => {
         alert("Ocurrió un error al conectarse con el servidor de WS, es necesario que vuelvas a iniciar sesión");
         console.error(error);
 
@@ -162,8 +162,8 @@ window.addEventListener('load', () => {
 
         ws.on('message', OnWSMessage);
         ws.on('connect', OnWSConnect);
-
-        // ws.onerror = OnWSError;
+        ws.on('connect_error', OnWSConnectError);
+        
     } catch (error) {
         alert("Ocurrió un error de autenticación, es necesario que vuelvas a iniciar sesión");
         sessionStorage.removeItem('token');
