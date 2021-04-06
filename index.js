@@ -1,5 +1,4 @@
 const express = require('express');
-const ws = require('ws');
 const http = require('http');
 const jwt = require('jsonwebtoken');
 const io = require("socket.io");
@@ -8,7 +7,10 @@ const database = require('./database');
 
 const app = express();
 const server = http.createServer(app);
-const socket_server = io(server);
+const socket_server = io(server, {
+    port: 3000,
+    serveClient: false
+});
 
 const secret_key = "e61f65d5-70b0-4271-bb28-87e0f3430b69";
 
@@ -111,24 +113,27 @@ socket_server.use((socket, next) => {
         next();
     } catch (error) {
         // Si se llama a next con un objeto error, el cliente se desconectará del socket
+        console.log(error);
         next(error);
     }
+});
+
+socket_server.on('connection', (socket) => {
+    // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
+    socket.on('message', (message) => {
+        let parsed_message = JSON.parse(message);
+
+        console.log(`Se recibió el mensaje ${parsed_message.message} de: ${parsed_message.username}`);
+
+        socket_server.emit('message', parsed_message);
+    });
 });
 
 // Aquí se encuentra todo el manejo de los WS después de que se hayan conectado al servidor
 // socket_server.on('connection', (ws, request) => {  
 //     map.set(ws, request.user);
 
-//     // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
-//     ws.on('message', (message) => {
-//         parsed_message = JSON.parse(message);
 
-//         console.log(`Se recibió el mensaje ${parsed_message.message} de: ${parsed_message.username}`);
-
-//         socket_server.clients.forEach((client) => {
-//             client.send(message);
-//         });
-//     });
 
 //     // Al cerrar el WS, se actualizara el estado de conexión del usuario a false
 //     ws.on('close', () => {
