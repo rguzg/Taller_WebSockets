@@ -80,10 +80,10 @@ document.querySelector('#back').addEventListener('click', () => {
 document.querySelector('#send_message').addEventListener('click', () => {
     let message = document.querySelector('#chat_text-box').value;
 
-    // Solo enviar mensajes cuando el estado de WS sea uno, osea cuando esté conectado al servidor
+    // Solo enviar mensajes cuando el estado de WS esté conectado al servidor
     // y cuando message no esté vacio
-    if(ws.readyState === 1 && message.trim() != ""){
-        ws.send(JSON.stringify({
+    if(ws.connected && message.trim() != ""){
+        ws.emit('message' ,JSON.stringify({
             message,
             username,
             color
