@@ -126,7 +126,7 @@ window.addEventListener('load', () => {
     };
 
     // Quitar el mensaje de "Conectando al chat..." y agregando el mensaje de "¡Bienvenido al chat!"
-    const OnWSOpen = () => {
+    const OnWSConnect = () => {
         document.querySelector('#mensaje_conexion').remove();
 
         document.querySelector('.m-chat-box__messages').appendChild(CreateMensajeBienvenida());
@@ -161,10 +161,9 @@ window.addEventListener('load', () => {
         });
 
         ws.on('message', OnWSMessage);
+        ws.on('connect', OnWSConnect);
 
-        // ws.onopen = OnWSOpen;
         // ws.onerror = OnWSError;
-        // ws.onmessage = OnWSMessage;
     } catch (error) {
         alert("Ocurrió un error de autenticación, es necesario que vuelvas a iniciar sesión");
         sessionStorage.removeItem('token');
