@@ -107,6 +107,8 @@ socket_server.use((socket, next) => {
             throw new Error();
         }
 
+        socket.user = username;
+        
         // Si el token es valido, se actualiza el estado de conexión del usuario
         database.usuarios[username].connected = true;
         
@@ -119,6 +121,8 @@ socket_server.use((socket, next) => {
 });
 
 socket_server.on('connection', (socket) => {
+    map.set(socket, socket.user);
+
     // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
     socket.on('message', (message) => {
         let parsed_message = JSON.parse(message);
@@ -127,26 +131,15 @@ socket_server.on('connection', (socket) => {
 
         socket_server.emit('message', parsed_message);
     });
+
+    // Al cerrar el WS, se actualizara el estado de conexión del usuario a false
+    socket.on('disconnect', () => {
+        let disconnected_user = map.get(socket);
+        database.usuarios[disconnected_user].connected = false;
+
+        console.log(`${disconnected_user} se desconectó del chat`);
+    });
 });
-
-// Aquí se encuentra todo el manejo de los WS después de que se hayan conectado al servidor
-// socket_server.on('connection', (ws, request) => {  
-//     map.set(ws, request.user);
-
-
-
-//     // Al cerrar el WS, se actualizara el estado de conexión del usuario a false
-//     ws.on('close', () => {
-//         let disconnected_user = map.get(ws);
-//         database.usuarios[disconnected_user].connected = false;
-
-//         console.log(`${disconnected_user} se desconectó del chat`);
-//     });
-
-//     ws.on('error', (error) => {
-//         console.log(error);
-//     });
-// });
 
 server.listen(process.env.PORT || 3000, () => {
     console.log('The server is running!');
