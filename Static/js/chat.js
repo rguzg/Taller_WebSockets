@@ -106,9 +106,7 @@ document.querySelector('#chat_text-box').addEventListener('keydown', (event) => 
 // y se conecta al servidor de WS
 window.addEventListener('load', () => {
     // Mostrar en el chat los mensajes recibidos
-    const OnWSMessage = (event) => {
-        let parsed_message = JSON.parse(event.data);
-
+    const OnWSMessage = (message) => {
         let chat_message_container = document.createElement('div');
         let username = document.createElement('span');
         let chat_message = document.createElement('span');
@@ -116,10 +114,10 @@ window.addEventListener('load', () => {
         chat_message_container.classList.add("m-chat__message");
 
         username.style.fontWeight = 'bold';
-        username.style.color = parsed_message.color;
-        username.innerText = parsed_message.username;
+        username.style.color = message.color;
+        username.innerText = message.username;
         
-        chat_message.innerText = `: ${parsed_message.message}`;
+        chat_message.innerText = `: ${message.message}`;
 
         chat_message_container.appendChild(username);
         chat_message_container.appendChild(chat_message);
@@ -161,6 +159,8 @@ window.addEventListener('load', () => {
             auth: {token},
             transports: ["websocket"],
         });
+
+        ws.on('message', OnWSMessage);
 
         // ws.onopen = OnWSOpen;
         // ws.onerror = OnWSError;
