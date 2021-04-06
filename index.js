@@ -122,7 +122,7 @@ socket_server.use((socket, next) => {
 
 socket_server.on('connection', (socket) => {
     map.set(socket, socket.user);
-
+    
     // Al recibir un mensaje, reenviar el mensaje a todos los clientes conectados
     socket.on('message', (message) => {
         let parsed_message = JSON.parse(message);
