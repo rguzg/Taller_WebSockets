@@ -157,10 +157,14 @@ window.addEventListener('load', () => {
         username = decoded_token.username;
         color = decoded_token.color;
 
-        ws = new WebSocket(`ws:///localhost:3000?token=${token}`);
-        ws.onopen = OnWSOpen;
-        ws.onerror = OnWSError;
-        ws.onmessage = OnWSMessage;
+        ws = io('http://localhost:3000', {
+            auth: {token},
+            transports: ["websocket"],
+        });
+
+        // ws.onopen = OnWSOpen;
+        // ws.onerror = OnWSError;
+        // ws.onmessage = OnWSMessage;
     } catch (error) {
         alert("Ocurrió un error de autenticación, es necesario que vuelvas a iniciar sesión");
         sessionStorage.removeItem('token');
