@@ -17,6 +17,29 @@ const CreateMensajeBienvenida = () => {
     return span;
 }
 
+const CreateMensajeReconexion = () => {
+    let message_container = document.createElement('div');
+    let loading_icon = document.createElement('img');
+    let loading_message = document.createElement('span');
+
+    // Definición de message_container
+    message_container.classList.add('h-flex');
+    message_container.id = 'mensaje_conexion';
+
+    // Definición de loading_icon
+    loading_icon.classList.add('h-mr1');
+    loading_icon.src = './Static/img/loading.svg';
+
+    // Definición de loading_message
+    loading_message.classList.add('m-chat__bienvenido');
+    loading_message.innerText = 'Reconectando al chat...'
+
+    message_container.appendChild(loading_icon);
+    message_container.appendChild(loading_message);
+
+    return message_container;
+}
+
 // Mostrar #chat_members junto con la lista de usuarios conectados
 document.querySelector('#open_chat_members').addEventListener('click', async () => {
     toggleChatMemberScreen();
