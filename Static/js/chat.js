@@ -165,6 +165,13 @@ window.addEventListener('load', () => {
         window.location = '/';
     }
 
+    // Al desconectarse se mostrará el mensaje de "Reconectandose al chat..."
+    const OnWSDisconnect = () => {
+        let mensaje_reconexion = CreateMensajeReconexion();
+
+        document.querySelector('.m-chat-box__messages').appendChild(mensaje_reconexion);
+    }
+
     try {
         let token = sessionStorage.getItem("token");
 
@@ -186,6 +193,7 @@ window.addEventListener('load', () => {
         ws.on('message', OnWSMessage);
         ws.on('connect', OnWSConnect);
         ws.on('connect_error', OnWSConnectError);
+        ws.on('disconnect', OnWSDisconnect);
         
     } catch (error) {
         alert("Ocurrió un error de autenticación, es necesario que vuelvas a iniciar sesión");
