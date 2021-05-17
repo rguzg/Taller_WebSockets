@@ -106,7 +106,6 @@ document.querySelector('#send_message').addEventListener('click', () => {
                 message,
                 username,
                 color,
-                image
             }));
         }
 
@@ -144,6 +143,14 @@ window.addEventListener('load', () => {
 
         chat_message_container.appendChild(username);
         chat_message_container.appendChild(chat_message);
+        
+        if(parsed_message.image){
+            let blob_url = URL.createObjectURL(new Blob([Uint8Array.from(parsed_message.image)]) );
+            
+            let image = document.createElement('img');
+            image.src = blob_url;
+            chat_message_container.appendChild(image);
+        }
 
         document.querySelector('.m-chat-box__messages').appendChild(chat_message_container);
     };
