@@ -145,6 +145,8 @@ window.addEventListener('load', () => {
         chat_message_container.appendChild(chat_message);
         
         if(parsed_message.image){
+            // Wasted hours on this line of code: 2
+            // WHY DOES JAVASCRIPT HAVE LIKE 20 WAYS OF REPRESENTING BINARY DATA AAAAAAAAAAHHHHHHHH
             let blob_url = URL.createObjectURL(new Blob([Uint8Array.from(parsed_message.image)]) );
             
             let image = document.createElement('img');
