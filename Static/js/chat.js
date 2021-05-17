@@ -79,15 +79,36 @@ document.querySelector('#back').addEventListener('click', () => {
 
 document.querySelector('#send_message').addEventListener('click', () => {
     let message = document.querySelector('#chat_text-box').value;
+    let image_input = document.querySelector('#imagen');
 
     // Solo enviar mensajes cuando el estado de WS sea uno, osea cuando esté conectado al servidor
     // y cuando message no esté vacio
     if(ws.readyState === 1 && message.trim() != ""){
-        ws.send(JSON.stringify({
-            message,
-            username,
-            color
-        }));
+        let image = null;
+
+        if(image_input.value){
+            let reader = new FileReader();
+            reader.readAsArrayBuffer(image_input.files[0]);
+
+            reader.onload = () => {
+                image = reader.result;
+                image = Array.from(new Uint8Array(image));
+
+                ws.send(JSON.stringify({
+                    message,
+                    username,
+                    color,
+                    image
+                }));
+            }
+        } else {    
+            ws.send(JSON.stringify({
+                message,
+                username,
+                color,
+                image
+            }));
+        }
 
         document.querySelector('#chat_text-box').value = "";
     }
