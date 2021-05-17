@@ -10,6 +10,33 @@ document.querySelector('#nombre').addEventListener('input', (element) => {
     }
 });
 
-document.querySelector('#empezar_chatear').addEventListener('click', () => {
-    window.location = '/chat';
+document.querySelector('#empezar_chatear').addEventListener('click', async () => {
+    let username = document.querySelector('#nombre').value;
+    let color = document.querySelector('#color').value;
+
+    if(username && color){
+        let response = await fetch('/login', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username,
+                color
+            })
+        });
+
+        let json = await response.json();
+
+        if(response.ok){
+            sessionStorage.setItem('username', username);
+            sessionStorage.setItem('color', color);
+
+            window.location = '/chat';
+        } else {
+            alert("Ocurrió un error al iniciar sesión");
+        }
+    }
+    
+    
 });
