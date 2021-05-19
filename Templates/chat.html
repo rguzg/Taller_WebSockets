@@ -17,6 +17,7 @@
     
     <!-- JS -->
     <script defer src="../Static/js/chat.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js" integrity="sha384-DkkWv9oJFWLIydBXXjkBWnG1/fuVhw8YPBq37uvvD6WSYRFRqr21eY5Dg9ZhmWdy" crossorigin="anonymous"></script>
 
     <title>Sockets.tv - Chat</title>
 </head>
@@ -34,6 +35,10 @@
         </div>
         <div class="m-chat-box__text-box">
             <textarea name="" id="chat_text-box" maxlength="50" rows="1" placeholder="Envía un mensaje"></textarea>
+            <label for="imagen">
+                <i class="fas fa-images" style="color: #ffffff; width: 30px; height: 30px; margin: 20px 20px;"></i>
+                <input type="file" name="imagen" id="imagen" style="display: none;">
+            </label>
             <button class="m-button h-align-self-end" id="enviar_mensaje">Chat</button>
         </div>
     </div>
